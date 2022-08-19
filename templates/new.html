@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}
+    New Application
+{% endblock title %}
+{% block content %}
+    <div class="text-center">
+        <h2>New Application</h2>
+    </div>
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+    <form method="post"class="mt-5">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
+            <input type="text" class="form-control" name="name" required>
+        </div>
+        <div class="btns">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Redirect url</span>
+                <input type="text" class="form-control" name="redirect" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+{% endblock content %}

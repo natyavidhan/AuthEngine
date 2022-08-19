@@ -3,9 +3,25 @@
     User
 {% endblock title %}
 {% block content %}
+<style>
+    .card{
+        color: black;
+        display: inline;
+        margin: 1rem;
+        padding: 1rem;
+        cursor: pointer;
+    }
+</style>
 <div class="text-center">
     <h2>Welcome, {{user['username']}}</h2>
     <a href="/new"><button class="btn btn-info">New Project</button></a>
     <a href="/logout"><button class="btn btn-danger">Logout</button></a>
+    <div class="mt-5">
+        {% for project in projects %}
+            <div class="card" onclick="location.href=`/project/{{project['_id']}}`">
+                {{project['name']}}
+            </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock content %}
