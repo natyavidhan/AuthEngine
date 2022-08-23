@@ -45,3 +45,6 @@ class Database:
 
     def getUserProjects(self, userid):
         return [i for i in self.allProjects.find({"owner": userid})]
+
+    def getProject(self, userid, projectid):
+        return self.allProjects.find_one({"owner": userid, "_id": projectid})

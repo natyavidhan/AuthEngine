@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{project['name']}}
+{% endblock title %}
+{% block content %}
+<div class="text-center">
+    <h2>{{project['name']}}</h2>
+    <div class="mt-5">
+        <h3>Public ID: <p>{{project['_id']}}</p></h3>
+        <h3>Private ID (Hover): <p class="key">{{project['private_id']}}</p></h3>
+    </div>
+    <div class="mt-5">
+        <h3>Redirect URLs</h3>
+        <ul>
+            {% for url in project['urls'] %}
+                <li>{{url}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<style>
+    .key{
+        color: transparent;
+        text-shadow: 0 0 10px rgb(255, 255, 255);
+        transition: 100ms ease-in-out;
+    }
+    .key:hover{
+        color: white;
+        text-shadow: none;
+        transition: 100ms ease-in-out;
+    }
+</style>
+{% endblock content %}

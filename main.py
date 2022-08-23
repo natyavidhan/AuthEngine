@@ -50,6 +50,14 @@ def new():
         return render_template("new.html", error=None)
     return redirect(url_for('index'))
 
+@app.route("/project/<id>")
+def project_view(id):
+    if 'user' in session:
+        project = database.getProject(session['user']['_id'], id)
+        if project:
+            return render_template("project.html", project=project)
+    return redirect(url_for('index'))
+
 def handle_authorize(remote, token, user_info):
     if not database.userExists(user_info['email']):
         database.addUser(user_info)
