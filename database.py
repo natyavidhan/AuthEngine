@@ -4,7 +4,7 @@ import jwt
 
 from uuid import uuid4
 import random
-import datetime
+from datetime import timedelta, datetime
 import requests
 import smtplib
 import ssl
@@ -29,7 +29,7 @@ class Database:
             'password': bcrypt.hashpw(user['password'].encode('utf-8'), bcrypt.gensalt()),
             'projects': [],
             'is_verified': False,
-            'created': datetime.datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
+            'created': datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
         }
         self.users.insert_one(user)
         self.send_mail(user['_id'])
@@ -85,7 +85,7 @@ class Database:
             'name': name,
             'urls': urls,
             'private_id': str(uuid4()),
-            'created': datetime.datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
+            'created': datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
         })
 
     def getUserProjects(self, userid):
@@ -93,3 +93,6 @@ class Database:
 
     def getProject(self, userid, projectid):
         return self.allProjects.find_one({"owner": userid, "_id": projectid})
+
+    def generateSession(self, user_id):
+        return jwt.encode({'_id': user_id, 'expires_at': int((datetime.now()+timedelta(30)).timestamp())}, os.getenv('TOKEN'), algorithm='HS256')
