@@ -1,6 +1,4 @@
 from flask import Flask, render_template, request, session, jsonify, redirect, url_for
-from authlib.integrations.flask_client import OAuth
-from loginpass import create_flask_blueprint, GitHub
 from dotenv import load_dotenv
 
 import os
@@ -14,10 +12,7 @@ if os.path.isfile(".env"):
 app = Flask(__name__)
 app.config.from_mapping(dict(os.environ))
 
-oauth = OAuth(app)
-
 database = Database(os.getenv("MONGO_URI"))
-backends = [GitHub]
 
 @app.route("/")
 def index():
@@ -58,14 +53,22 @@ def project_view(id):
             return render_template("project.html", project=project)
     return redirect(url_for('index'))
 
-def handle_authorize(remote, token, user_info):
-    if not database.userExists(user_info['email']):
-        database.addUser(user_info)
-    session['user'] = database.getUser(user_info['email'])
-    return redirect(url_for('index'))
-
-bp = create_flask_blueprint(backends, oauth, handle_authorize)
-app.register_blueprint(bp, url_prefix='/')
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    if 'user' not in session:
+        if request.method == "POST":
+            form = dict(request.form)
+            if 'email' not in form or 'username' not in form or 'password' not in form:
+                return render_template("register.html", error="Missing Values"), 400
+            for val in list(form.values()):
+                if val.replace(" ", "") == '' or val is None:
+                    return render_template("register.html", error="Empty Value"), 400
+            if database.userExists(form['email']):
+                return render_template("register.html", error="Email already exist"), 400
+            user = database.addUser(form)
+            session['user'] = user
+            return redirect(url_for('index'))
+        return render_template("register.html", error=None)
 
 if __name__ == "__main__":
     app.run(debug=True)
